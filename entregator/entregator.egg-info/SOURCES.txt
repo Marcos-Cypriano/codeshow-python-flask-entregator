@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+entregator/__init__.py
+entregator/app.py
+entregator.egg-info/PKG-INFO
+entregator.egg-info/SOURCES.txt
+entregator.egg-info/dependency_links.txt
+entregator.egg-info/requires.txt
+entregator.egg-info/top_level.txt
