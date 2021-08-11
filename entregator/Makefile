@@ -14,5 +14,8 @@ clean:
 	rm -rf docs/_build
 	pip install -e .['dev'] --upgrade --no-cache
 
+test:
+	pytest tests/ -v --cov=entregator
+
 hello:
 	echo "Hello"
