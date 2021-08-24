@@ -1,5 +1,7 @@
 flask
 flask-sqlalchemy
+flask-migrate
+flask-admin
 
 [dev]
 black
@@ -12,3 +14,4 @@ isort
 pytest
 pytest-flask
 pytest-cov
+tabulate

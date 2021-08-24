@@ -15,10 +15,19 @@ clean:
 	pip install -e .['dev'] --upgrade --no-cache
 	
 test:
-	pytest tests/ -v --cov=entregator
+	FLASK_ENV=test pytest tests/ -v --cov=entregator
 
 test:
-	pytest tests/ -v --cov=entregator
+	FLASK_ENV=test pytest tests/ -v --cov=entregator
 
-hello:
-	echo "Hello"
+init_db:
+	FLASK_APP=entregator/app.py flask create-db
+	FLASK_APP=entregator/app.py flask db upgrade
+
+format:
+	isort **/*.py
+	black -l 79 **/*.py
+
+run:
+	FLASK_APP=entregator/app.py FLASK_ENV=development flask run
+	

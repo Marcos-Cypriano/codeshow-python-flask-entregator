@@ -1,6 +1,6 @@
 import click
-from entregator.ext.db import db
-from entregator.ext.site import models
+from entregator.ext.db import db, models
+from tabulate import tabulate
 
 def init_app(app):
 
@@ -27,8 +27,13 @@ def init_app(app):
 
     @app.cli.command()
     def listar_pedidos():
-        click.echo('lista de pedidos')
+        click.echo('lista de pedidos ')
         
     @app.cli.command()
     def listar_usuarios():
-        click.echo('lista de usuarios')
+        users = models.User.query.all()
+        lista = []
+        for user in users:
+            lista.append(['name', user])
+
+        click.echo(f'lista de usuarios\n{tabulate(lista)}')

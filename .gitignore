@@ -130,3 +130,6 @@ dmypy.json
 
 # db
 delivery/delivery/delivery.db
+
+#Sensible informations
+*/**.secrets.*
