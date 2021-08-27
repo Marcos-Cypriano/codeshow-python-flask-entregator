@@ -11,6 +11,7 @@ EXTENSIONS = [
     'entregator.ext.site:init_app',
     'entregator.ext.hooks:init_app'
 ]
+UPLOAD_FOLDER = 'uploads'
 
 [development]
 DEBUG = true

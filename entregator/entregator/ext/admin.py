@@ -11,4 +11,6 @@ def init_app(app):
     admin.template_mode = app.config.get('ADMIN_TEMPLATE_MODE', 'bootstrap2')
     admin.init_app(app)
 
+    # PROTEGER com senha
+    # TRADUZIR para PTBR
     admin.add_view(ModelView(Category, db.session))

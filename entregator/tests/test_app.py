@@ -6,3 +6,5 @@ def test_config_is_loaded(config):
 
 def test_request_returns_404(client):
     assert client.get('/url_nao_existente').status_code == 404
+
+#ADICIONAR testes para as outras features

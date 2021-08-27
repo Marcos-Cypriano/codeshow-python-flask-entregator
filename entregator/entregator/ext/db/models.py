@@ -9,6 +9,10 @@ class User(db.Model):
     passwd = db.Column('passwd', db.Unicode)
     admin = db.Column('admin', db.Boolean)
 
+    '''def save(self):
+        db.session.add(self)
+        db.session.commit()'''
+
     def __repr__(self) -> str:
         return self.email
 

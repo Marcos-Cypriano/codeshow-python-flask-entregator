@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block top %}
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1>Cadastre-se no melhor Ifood!</h1>
+        </div>
+    </div>
+</section>
+{% endblock top %}
+
+
+{% block main %}
+
+<form class="user-form" action="{{url_for('site.signup')}}" method="POST" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    
+    {{form.email.label}}<br>
+    {{form.email(size=20)}}<br>
+
+    {{form.passwd.label}}<br>
+    {{form.passwd(size=20)}}<br>
+
+    {{form.foto.label}}<br>
+    {{form.foto}}<br>
+    <input type="submit" value="Enviar">
+</form>
+
+{% endblock main %}
