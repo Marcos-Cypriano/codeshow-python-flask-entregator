@@ -1,6 +1,14 @@
 # -*- encoding: utf-8 -*-
 
+from flask_login import UserMixin
+
 from entregator.ext.db import db
+from entregator.ext.admin import login_manager
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.filter_by(id=user_id).first()
 
 class User(db.Model):
     __tablename__ = "user"
@@ -12,6 +20,20 @@ class User(db.Model):
     '''def save(self):
         db.session.add(self)
         db.session.commit()'''
+    
+    #PROPRIEDADES DO FLASK-LOGIN    
+    @property
+    def is_authenticated(self):
+        return True
+    @property
+    def is_active(self):
+        return True
+    @property
+    def is_anonymous(self):
+        return False
+    
+    def get_id(self):
+        return str(self.id)
 
     def __repr__(self) -> str:
         return self.email

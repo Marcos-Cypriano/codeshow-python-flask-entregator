@@ -1,4 +1,4 @@
-from entregator.ext.auth.controller import create_user
+#from entregator.ext.auth.controller import create_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import filters
@@ -15,7 +15,7 @@ class UserAdmin(ModelView):
     '''Interface do usuário admin'''
 
     column_formatters = {'email': format_user}
-    column_list = ['admin', 'email']
+    column_list = ['admin', 'email', 'passwd']
     column_searchable_list = ['email']
     column_filters = [
         'email',
@@ -23,7 +23,7 @@ class UserAdmin(ModelView):
         filters.FilterLike(User.email, 'dominio', options=(('gmail', 'Gmail'), ('uol', 'Uol')))
         ]
 
-    can_edit = False
+    can_edit = True
     can_create = True
     can_delete = True
 
@@ -61,7 +61,7 @@ class CategoryAdmin(ModelView):
 
 class StoreAdmin(ModelView):
     #ACERTAR o nome da categoria ao criar um novo restaurante e na listagem
-    column_list = ['active', 'name', 'user', 'category']
+    column_list = ['active', 'name', 'user', 'category.name']
     column_searchable_list = ['category_id']
 
     can_edit = True

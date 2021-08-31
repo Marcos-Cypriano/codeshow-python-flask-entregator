@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block top %}
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1>Entre na sua conta!</h1>
+        </div>
+    </div>
+</section>
+{% endblock top %}
+
+
+{% block main %}
+
+<form class="user-form" action="{{url_for('site.login')}}" method="POST" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    
+    {{form.email.label}}<br>
+    {{form.email(size=20)}}<br>
+
+    {{form.passwd.label}}<br>
+    {{form.passwd(size=20)}}<br>
+    <input type="submit" value="Entrar">
+</form>
+
+{% endblock main %}
