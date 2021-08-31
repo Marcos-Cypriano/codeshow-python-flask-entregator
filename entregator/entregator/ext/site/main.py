@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, request
 from entregator.ext.auth.form import UserForm
 from entregator.ext.auth.controller import create_user, save_user_photo 
+
 bp = Blueprint('site', __name__)
 
 @bp.route('/')

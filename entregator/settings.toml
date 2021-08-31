@@ -6,7 +6,6 @@ EXTENSIONS = [
     'entregator.ext.db:init_app',
     'entregator.ext.auth:init_app',
     'entregator.ext.admin:init_app',
-    'entregator.ext.migrate:init_app',
     'entregator.ext.cli:init_app',
     'entregator.ext.site:init_app',
     'entregator.ext.hooks:init_app'
@@ -25,7 +24,6 @@ EXTENSIONS = [
     'entregator.ext.db:init_app',
     'entregator.ext.auth:init_app',
     'entregator.ext.admin:init_app',
-    'entregator.ext.migrate:init_app',
     'entregator.ext.cli:init_app',
     'entregator.ext.toolbar:init_app',
     'entregator.ext.site:init_app',

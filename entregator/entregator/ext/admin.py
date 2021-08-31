@@ -1,7 +1,9 @@
+from entregator.ext.auth.admin import CategoryAdmin
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+#from flask_admin.contrib.sqla import ModelView
 from entregator.ext.db import db
-from entregator.ext.db.models import Category
+from entregator.ext.auth.admin import CategoryAdmin, StoreAdmin
+from entregator.ext.db.models import Category, Store
 
 
 admin = Admin()
@@ -13,4 +15,5 @@ def init_app(app):
 
     # PROTEGER com senha
     # TRADUZIR para PTBR
-    admin.add_view(ModelView(Category, db.session))
+    admin.add_view(CategoryAdmin(Category, db.session))
+    admin.add_view(StoreAdmin(Store, db.session))

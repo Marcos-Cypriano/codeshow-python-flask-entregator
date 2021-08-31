@@ -10,9 +10,11 @@ ALG = 'pbkdf2:sha256'
 #Mudar para o Models
 def create_user(email: str, passwd: str, admin: bool=False) -> User:
     user = User(email=email, passwd=generate_password_hash(passwd, ALG), admin=admin)
+    
     db.session.add(user)
     #TRATAR exceção caso o usuário já exista!
     db.session.commit()
+        
     return user
 
 def save_user_photo(filename, filestorage):

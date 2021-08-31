@@ -1,3 +1,4 @@
+from entregator.ext.auth.controller import create_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import filters
@@ -48,3 +49,21 @@ class UserAdmin(ModelView):
         users = User.query.filter(User.id.in_(ids)).all()
         #Redirecionar para um formulário de email, enviar e confirmar quantos foram com sucesso
         flash(f'Alteração no campo admin dos {len(users)} usuários , executada com sucesso!', 'success')
+
+
+class CategoryAdmin(ModelView):
+    column_list = ['on_menu', 'name']
+
+    can_edit = False
+    can_create = True
+    can_delete = True
+
+
+class StoreAdmin(ModelView):
+    #ACERTAR o nome da categoria ao criar um novo restaurante e na listagem
+    column_list = ['active', 'name', 'user', 'category']
+    column_searchable_list = ['category_id']
+
+    can_edit = True
+    can_create = True
+    can_delete = True
