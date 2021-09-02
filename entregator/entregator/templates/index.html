@@ -4,12 +4,21 @@
 {% block top %}
 <section class="hero is-primary">
     <div class="hero-body">
-        <p class="title">
-            {{  site_name  }}
-        </p>
-        <p class="subtitle">
-            {{  site_subtitle  }}
-        </p>
+        {% if current_user.is_active %}
+            <p class="title">
+                Olá <strong>{{ current_user }}</strong>
+            </p>
+            <p class="subtitle">
+                A fome bateu?
+            </p>
+        {% else %}
+            <p class="title">
+                <strong>Entregator</strong>
+            </p>
+            <p class="subtitle">
+                É hora de comer!
+            </p>
+        {% endif %}
     </div>
 </section>
 {% endblock top %}
@@ -17,6 +26,8 @@
 
 {% block main %}
 <div class="columns">
-    {{ list_item.cards([1, 2, 3, 4]) }}
+    {% if stores %}
+        {{ list_item.cards(stores) }}
+    {% endif %}
 </div>
 {% endblock main %}

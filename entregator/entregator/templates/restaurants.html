@@ -5,10 +5,10 @@
 <section class="hero is-primary">
     <div class="hero-body">
         <p class="title">
-            {{  site_name  }}
+            Restaurantes
         </p>
         <p class="subtitle">
-            {{  site_subtitle  }}
+            Escolha quem irá saciar sua sede!
         </p>
     </div>
 </section>
@@ -17,6 +17,8 @@
 
 {% block main %}
 <div class="columns">
-    {{ list_item.cards([1, 2, 3, 4, 5, 6, 7, 8]) }}
+    {% if stores %}
+        {{ list_item.cards(stores) }}
+    {% endif %}
 </div>
 {% endblock main %}

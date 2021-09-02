@@ -3,21 +3,27 @@ from flask.helpers import url_for
 from flask_login import login_user, logout_user
 
 from entregator.ext.auth.form import UserForm
-from entregator.ext.db.models import User
+from entregator.ext.db.models import Category, Store, User
 from entregator.ext.auth.controller import create_user, save_user_photo 
 
 bp = Blueprint('site', __name__)
 
 @bp.route('/')
 def index():
-    return render_template('index.html')
+    categories = Category.query.all()
+    stores = Store.query.filter(Store.id < 4)
+
+    return render_template('index.html', categories=categories, stores=stores)
 
 @bp.route('/sobre')
 def about():
-    return render_template('about.html')
+    categories = Category.query.all()
+    return render_template('about.html', categories=categories)
 
 @bp.route('/cadastro', methods=['GET', 'POST'])
 def signup():
+    categories = Category.query.all()
+
     form = UserForm()
 
     if form.validate_on_submit():
@@ -32,10 +38,12 @@ def signup():
     '''if request.method == 'POST':
         __import__('ipdb').set_trace()'''
 
-    return render_template('userform.html', form=form)
+    return render_template('userform.html', form=form, categories=categories)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    categories = Category.query.all()
+
     form = UserForm()
 
     if form.validate_on_submit():
@@ -48,7 +56,7 @@ def login():
         else:
             flash('Usuário ou senha incorretos!')
 
-    return render_template('login.html', form = form)
+    return render_template('login.html', form = form, categories=categories)
 
 @bp.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -58,4 +66,7 @@ def logout():
 
 @bp.route('/restaurantes')
 def restaurants():
-    return render_template('restaurants.html')
+    categories = Category.query.all()
+    stores = Store.query.all()
+
+    return render_template('restaurants.html', categories=categories, stores=stores)

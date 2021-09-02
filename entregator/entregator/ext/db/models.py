@@ -24,7 +24,8 @@ class User(db.Model):
     #PROPRIEDADES DO FLASK-LOGIN    
     @property
     def is_authenticated(self):
-        return True
+        if self.admin == 1:
+            return True
     @property
     def is_active(self):
         return True

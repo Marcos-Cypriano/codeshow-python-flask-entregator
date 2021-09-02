@@ -1,14 +1,25 @@
-#from entregator.ext.auth.controller import create_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import filters
 from entregator.ext.db.models import User
 from entregator.ext.db import db
-from flask import flash
+from flask import flash, redirect, url_for
+from flask_login import current_user
+from flask_admin import AdminIndexView
 
 
 def format_user(self, request, user, *args):
     return user.email.split('@')[0]
+
+class MyAdminIndexView(AdminIndexView):
+    #VISUALIZAÇÃO da página '/admin'
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        flash('Você não possui permissão para acessar. Entre com um perfil de administrador')
+        return redirect(url_for('site.index'))
 
 
 class UserAdmin(ModelView):
@@ -52,6 +63,7 @@ class UserAdmin(ModelView):
 
 
 class CategoryAdmin(ModelView):
+
     column_list = ['on_menu', 'name']
 
     can_edit = False
@@ -60,6 +72,7 @@ class CategoryAdmin(ModelView):
 
 
 class StoreAdmin(ModelView):
+
     #ACERTAR o nome da categoria ao criar um novo restaurante e na listagem
     column_list = ['active', 'name', 'user', 'category.name']
     column_searchable_list = ['category_id']
