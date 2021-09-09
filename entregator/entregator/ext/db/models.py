@@ -46,6 +46,9 @@ class Category(db.Model):
     name = db.Column('name', db.Unicode, unique=True)
     on_menu = db.Column('on_menu', db.Boolean)
 
+    def __repr__(self):
+        return '%r' % (self.name)
+
 
 class Store(db.Model):
     __tablename__ = "store"
@@ -58,6 +61,9 @@ class Store(db.Model):
     user = db.relationship('User', foreign_keys=user_id)
     category = db.relationship('Category', foreign_keys=category_id)
 
+    def __repr__(self):
+        return '%r' % (self.name)
+
 
 class Items(db.Model):
     __tablename__ = "items"
@@ -69,6 +75,9 @@ class Items(db.Model):
     available = db.Column('available', db.Boolean)
 
     store = db.relationship('Store', foreign_keys=store_id)
+
+    def __repr__(self):
+        return '%r' % (self.name)
 
 
 class Order(db.Model):

@@ -100,7 +100,7 @@
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                {% if 'incorretos' in messages[0] %}
+                {% if 'incorretos' or 'existe' in messages[0] %}
                     <div class='notification is-warning'>
                         <ul class=flashes>
                         {% for message in messages %}

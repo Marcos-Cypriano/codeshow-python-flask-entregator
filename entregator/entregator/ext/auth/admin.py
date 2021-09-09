@@ -73,10 +73,25 @@ class CategoryAdmin(ModelView):
 
 class StoreAdmin(ModelView):
 
-    #ACERTAR o nome da categoria ao criar um novo restaurante e na listagem
-    column_list = ['active', 'name', 'user', 'category.name']
+    column_list = ['active', 'name', 'user', 'category']
     column_searchable_list = ['category_id']
 
     can_edit = True
+    can_create = True
+    can_delete = True
+
+
+class ItemsAdmin(ModelView):
+    #TENTAR alterar a busca para o nome do restaurante
+    column_searchable_list = ['store_id']
+
+    can_edit = False
+    can_create = True
+    can_delete = True
+
+
+class OrderAdmin(ModelView):
+
+    can_edit = False
     can_create = True
     can_delete = True
