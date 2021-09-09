@@ -70,7 +70,7 @@ class Items(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Unicode)
     image = db.Column('image', db.Unicode)
-    price = db.Column('price', db.Numeric)
+    price = db.Column('price', db.Numeric(4,2))
     store_id = db.Column('store_id', db.Integer, db.ForeignKey('store.id'))
     available = db.Column('available', db.Boolean)
 

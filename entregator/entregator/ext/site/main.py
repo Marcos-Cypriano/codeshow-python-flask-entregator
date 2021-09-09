@@ -3,7 +3,7 @@ from flask.helpers import url_for
 from flask_login import login_user, logout_user
 
 from entregator.ext.auth.form import UserForm
-from entregator.ext.db.models import Category, Store, User
+from entregator.ext.db.models import Category, Items, Store, User
 from entregator.ext.auth.controller import create_user, save_user_photo 
 
 bp = Blueprint('site', __name__)
@@ -71,7 +71,6 @@ def restaurants():
 
     return render_template('restaurants.html', categories=categories, stores=stores)
 
-#CONSERTAR o nome que fica na rota
 @bp.route('/restaurantes/<categoria>')
 def category_restaurants(categoria):
     categories = Category.query.all()
@@ -81,3 +80,13 @@ def category_restaurants(categoria):
     stores = Store.query.filter_by(category_id=restaurantes.id)
 
     return render_template('category_restaurants.html', categories=categories, stores=stores)
+
+@bp.route('/restaurante/<loja>')
+def page_restaurant(loja):
+    categories = Category.query.all()
+
+    store = Store.query.filter_by(name=loja).first()
+
+    itens = Items.query.filter_by(store_id=store.id).all()
+
+    return render_template('page_restaurant.html', categories=categories, stores=itens)

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "macros/list_item.html" as list_item %}
+
+{% block top %}
+<section class="hero is-primary">
+    <div class="hero-body">
+        {% if current_user.is_active %}
+            <p class="title">
+                Olá <strong>{{ current_user }}</strong>
+            </p>
+            <p class="subtitle">
+                A fome bateu?
+            </p>
+        {% else %}
+            <p class="title">
+                <strong>Entregator</strong>
+            </p>
+            <p class="subtitle">
+                É hora de comer!
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock top %}
+
+
+{% block main %}
+<div class="columns">
+    {% if stores %}
+        {{ list_item.cards(stores) }}
+    {% endif %}
+</div>
+{% endblock main %}
