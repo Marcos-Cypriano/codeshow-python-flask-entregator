@@ -70,3 +70,14 @@ def restaurants():
     stores = Store.query.all()
 
     return render_template('restaurants.html', categories=categories, stores=stores)
+
+#CONSERTAR o nome que fica na rota
+@bp.route('/restaurantes/<categoria>')
+def category_restaurants(categoria):
+    categories = Category.query.all()
+
+    restaurantes = Category.query.filter_by(name=categoria).first()
+
+    stores = Store.query.filter_by(category_id=restaurantes.id)
+
+    return render_template('category_restaurants.html', categories=categories, stores=stores)

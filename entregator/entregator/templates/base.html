@@ -48,15 +48,11 @@
             
                     <div class="navbar-dropdown">
                         {% if categories %}
-                            <a class="navbar-item">
-                                {{ categories[0].name }}
-                            </a>
-                            <a class="navbar-item">
-                                {{ categories[1].name }}
-                            </a>
-                            <a class="navbar-item">
-                                {{ categories[2].name }}
-                            </a>
+                            {% for n in range(0, 3) %}
+                                <a class="navbar-item" href="/restaurantes/{{categories[n].name}}">
+                                    {{ categories[n].name }}
+                                </a>
+                            {% endfor %}
                         {% endif %}
                         <hr class="navbar-divider">
                         <a class="navbar-item">
