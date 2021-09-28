@@ -1,10 +1,11 @@
 import os
+import datetime
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from flask import current_app as app
 from flask import flash
 from sqlalchemy.exc import IntegrityError
-from entregator.ext.db.models import User
+from entregator.ext.db.models import Order, OrderItems, User
 from entregator.ext.db import db
 
 
@@ -21,8 +22,44 @@ def create_user(email: str, passwd: str, admin: bool=False) -> User:
         
     return user
 
+
 def save_user_photo(filename, filestorage):
     '''Saves user photo in .uploads/user/dfhioadihow.ext'''
     filename = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(filename))
     #VERIFICAR se o diretório existe; criar caso não exista
     filestorage.save(filename)
+
+
+def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, user_id = int, store_id = int, address_id = int) -> Order:
+    order = Order(created_at=created_at, completed=completed, user_id=user_id, store_id=store_id, address_id=address_id)
+    
+    db.session.add(order)
+    db.session.commit()
+        
+    return order
+
+
+def alter_order(created_at: datetime=datetime.datetime.now(), id = int, store_id = int) -> Order:
+    order = Order.query.filter_by(id=id).first()
+    order.store_id = store_id
+    order.created_at = created_at
+    
+    db.session.commit()
+        
+    return order
+
+
+def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItems:
+    order_items = OrderItems(order_id=order_id, items_id=items_id, quant=quant)
+    
+    db.session.add(order_items)
+    db.session.commit()
+        
+    return order_items
+
+
+def delete_order_items(items_id = int) -> OrderItems:
+    OrderItems.query.filter_by(id=items_id).delete()
+    db.session.commit()
+        
+    return 'Item removido do carrinho!'

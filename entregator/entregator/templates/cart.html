@@ -16,7 +16,7 @@
                 <strong>Entregator</strong>
             </p>
             <p class="subtitle">
-                {{ loja }} está pronto para matar sua fome!
+                Este é o seu prato!
             </p>
         {% endif %}
     </div>
@@ -25,9 +25,17 @@
 
 
 {% block main %}
-<div class="columns">
-    {% if stores %}
-        {{ list_item.cards(stores) }}
-    {% endif %}
-</div>
+    <div class="content is-normal">
+        <h1>O número do seu pedido é {{ order.id }}, ele contém:</h1>
+        
+        <ul>
+            {% for item in order_items %}
+            <li>{{ item.quantidade }} - {{ item.name }}: R${{ item.preco }} cada</li>
+            <form action="{{url_for('site.remove', item=item.id)}}" method="POST">
+                <input type="submit" value="Remover" />
+            </form>
+            <!-- <button class="button is-light" href="{{url_for('site.remove', item=item.id)}}">Remover</button> -->
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock main %}

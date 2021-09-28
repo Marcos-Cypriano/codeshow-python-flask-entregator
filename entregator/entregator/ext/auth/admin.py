@@ -85,12 +85,26 @@ class ItemsAdmin(ModelView):
     #TENTAR alterar a busca para o nome do restaurante
     column_searchable_list = ['store_id']
 
-    can_edit = False
+    can_edit = True
     can_create = True
     can_delete = True
 
 
 class OrderAdmin(ModelView):
+
+    can_edit = True
+    can_create = True
+    can_delete = True
+
+
+class OrderItemsAdmin(ModelView):
+
+    can_edit = False
+    can_create = True
+    can_delete = True
+
+
+class AddressAdmin(ModelView):
 
     can_edit = False
     can_create = True

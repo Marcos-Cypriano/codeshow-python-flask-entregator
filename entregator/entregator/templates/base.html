@@ -68,14 +68,14 @@
                             <a class="button is-primary" href="{{url_for('admin.index')}}">
                                 <strong>Admin</strong>
                             </a>
-                            <a class="button is-primary">
+                            <a class="button is-primary" href="{{url_for('site.cart')}}">
                                 <strong>Carrinho</strong>
                             </a>
                             <a class="button is-light" href="{{url_for('site.logout')}}">
                                 Log out
                             </a>
                         {% elif current_user.is_active %}
-                            <a class="button is-primary">
+                            <a class="button is-primary" href="{{url_for('site.cart')}}">
                                 <strong>Carrinho</strong>
                             </a>
                             <a class="button is-light" href="{{url_for('site.logout')}}">
@@ -100,7 +100,7 @@
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                {% if 'incorretos' or 'existe' in messages[0] %}
+                {% if 'incorretos' in messages[0] or 'outro' in messages[0] or 'Não' in messages[0] or 'apenas' in messages[0] %}
                     <div class='notification is-warning'>
                         <ul class=flashes>
                         {% for message in messages %}
