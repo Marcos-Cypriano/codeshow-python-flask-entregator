@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import current_app as app
 from flask import flash
 from sqlalchemy.exc import IntegrityError
-from entregator.ext.db.models import Order, OrderItems, User
+from entregator.ext.db.models import Checkout, Items, Order, OrderItems, User
 from entregator.ext.db import db
 
 
@@ -63,3 +63,30 @@ def delete_order_items(items_id = int) -> OrderItems:
     db.session.commit()
         
     return 'Item removido do carrinho!'
+
+
+def complete_order(order_id = int, completed = bool) -> Order:
+    order = Order.query.filter_by(id=order_id).first()
+    order.completed = completed
+
+    db.session.commit()
+
+    return order
+
+
+def create_checkout(payment = str, total = float, created_at: datetime=datetime.datetime.now(), completed: bool=False, order_id = int):
+    #order = Order.query.filter_by(id=order_id).first()
+    items = OrderItems.query.filter_by(order_id=order_id).all()
+    tot = 0
+    items_list = []
+    for item in items:
+        prato = Items.query.filter_by(id=item.items_id).first()
+        items_list.append({'name': prato.name, 'quantidade': item.quant})
+        tot += prato.price * item.quant
+
+    checkout = Checkout(payment=payment, total=tot, created_at=created_at, completed=completed, order_id=order_id)
+
+    db.session.add(checkout)
+    db.session.commit()
+
+    return checkout

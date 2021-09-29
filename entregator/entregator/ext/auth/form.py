@@ -21,3 +21,10 @@ class OrderItemsForm(FlaskForm):
     order_id = wtf.IntegerField()
     items_id = wtf.IntegerField()
     quant = wtf.IntegerField()
+
+class CheckoutForm(FlaskForm):
+    payment = wtf.StringField()
+    total = wtf.FloatField()
+    created_at = wtf.DateTimeField()
+    completed = wtf.BooleanField()
+    order_id = wtf.IntegerField()

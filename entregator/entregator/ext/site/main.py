@@ -1,16 +1,17 @@
 from flask import Blueprint, render_template, redirect, request, flash, url_for
+from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user, current_user
 
-from entregator.ext.auth.form import OrderItemsForm, UserForm
+from entregator.ext.auth.form import CheckoutForm, OrderItemsForm, UserForm
 from entregator.ext.db.models import Address, Category, Items, Order, OrderItems, Store, User
-from entregator.ext.auth.controller import alter_order, create_order_items, create_order, create_user, delete_order_items, save_user_photo 
+from entregator.ext.auth.controller import alter_order, complete_order, create_checkout, create_order_items, create_order, create_user, delete_order_items, save_user_photo 
 
 bp = Blueprint('site', __name__)
 
 @bp.route('/')
 def index():
     categories = Category.query.all()
-    stores = Store.query.filter(Store.id < 4)
+    stores = Store.query.filter(Store.id < 5)
 
     return render_template('index.html', categories=categories, stores=stores)
 
@@ -99,7 +100,7 @@ def page_restaurant(loja):
 
 
 @bp.route('/meu-carrinho/<loja>/<item>', methods=['GET', 'POST'])
-def checkout(loja, item):
+def cart_order(loja, item):
     categories = Category.query.all()
 
     if not current_user.is_active:
@@ -130,17 +131,17 @@ def checkout(loja, item):
         form = OrderItemsForm()
 
         if form.validate_on_submit():
-            order_item = create_order_items(order_id=order.id, items_id=comida.id, quant=form.quant.data)
+            create_order_items(order_id=order.id, items_id=comida.id, quant=form.quant.data)
 
             order_items = OrderItems.query.filter_by(order_id=order.id).all()
             items_list = []
             for it in order_items:
                 prato = Items.query.filter_by(id=it.items_id).first()
-                items_list.append({'name': prato.name, 'quantidade': it.quant, 'preco': prato.price})
+                items_list.append({'name': prato.name, 'quantidade': it.quant, 'preco': prato.price, 'id': it.id})
 
             return render_template('/cart.html', categories=categories, order=order, order_items=items_list)
 
-    return render_template('checkout.html', categories=categories, form=form, comida=comida, item=item, loja=loja)
+    return render_template('cart_order.html', categories=categories, form=form, comida=comida, item=item, loja=loja)
 
 
 @bp.route('/meu-carrinho', methods=['GET', 'POST'])
@@ -155,11 +156,13 @@ def cart():
     else:
         order_items = OrderItems.query.filter_by(order_id=order.id).all()
         items_list = []
+        tot = 0
         for item in order_items:
             prato = Items.query.filter_by(id=item.items_id).first()
             items_list.append({'name': prato.name, 'quantidade': item.quant, 'preco': prato.price, 'id': item.id})
+            tot += prato.price * item.quant
 
-    return render_template('/cart.html', categories=categories, order=order, order_items=items_list)
+    return render_template('/cart.html', categories=categories, order=order, order_items=items_list, tot=tot)
 
 
 @bp.route('/remover/<item>', methods=['GET', 'POST'])
@@ -174,3 +177,31 @@ def remove(item):
     flash(frase)
 
     return redirect('/')
+
+
+@bp.route('/confirmado/<order>', methods=['GET', 'POST'])
+def checkout(order):
+    try:
+        complete_order(order_id=order, completed=True)
+    except:
+        flash('Pedido não pode ser confirmado!')
+        return render_template('/checkout.html')
+
+    value = request.form.get('pagamento')
+
+    pedido = Order.query.filter_by(id=order).first()
+    loja = Store.query.filter_by(id=pedido.store_id).first()
+    pratos = OrderItems.query.filter_by(order_id=order).all()
+    items_list = []
+
+    for item in pratos:
+            prato = Items.query.filter_by(id=item.items_id).first()
+            items_list.append({'name': prato.name, 'quantidade': item.quant, 'preco': prato.price, 'id': item.id})
+
+    
+    checkout = create_checkout(payment=value, order_id=order)
+    
+    flash('Pedido confirmado! Aguarde mais informações diretamente do restaurante.')
+    return render_template('/checkout.html', loja=loja.name, items_list=items_list, tot=checkout.total, pag=checkout.payment)
+
+    

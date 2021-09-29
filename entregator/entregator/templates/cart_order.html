@@ -25,7 +25,15 @@
 
 
 {% block main %}
-    {% if stores %}
-        {{ list_item.cards(stores) }}
-    {% endif %}
+    <form class="user-form" action="{{url_for('site.cart_order', loja=loja, item=item)}}" method="POST" enctype="multipart/form-data">    
+        {{form.csrf_token}}
+        
+        <h1>Comida escolhida: {{comida.name}}</h1>
+    
+        {{form.quant.label}}<br>
+        {{form.quant(size=20)}}<br>
+    
+        <input type="submit" value="Adicionar">
+    </form>
+
 {% endblock main %}

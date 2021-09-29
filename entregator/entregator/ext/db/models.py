@@ -1,7 +1,3 @@
-# -*- encoding: utf-8 -*-
-
-from flask_login import UserMixin
-
 from entregator.ext.db import db
 from entregator.ext.admin import login_manager
 
@@ -111,7 +107,7 @@ class Checkout(db.Model):
     __tablename__ = "checkout"
     id = db.Column('id', db.Integer, primary_key=True)
     payment = db.Column('payment', db.Unicode)
-    total = db.Column('total', db.Numeric)
+    total = db.Column('total', db.Numeric(4,2))
     created_at = db.Column('created_at', db.DateTime)
     completed = db.Column('completed', db.Boolean)
     order_id = db.Column('order_id', db.Integer, db.ForeignKey('order.id'))

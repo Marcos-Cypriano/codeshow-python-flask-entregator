@@ -1,39 +1,25 @@
 {% extends "base.html" %}
-{% import "macros/list_item.html" as list_item %}
 
 {% block top %}
 <section class="hero is-primary">
     <div class="hero-body">
-        {% if current_user.is_active %}
-            <p class="title">
-                Olá <strong>{{ current_user }}</strong>
-            </p>
-            <p class="subtitle">
-                {{ loja }} está pronto para matar sua fome!
-            </p>
-        {% else %}
-            <p class="title">
-                <strong>Entregator</strong>
-            </p>
-            <p class="subtitle">
-                {{ loja }} está pronto para matar sua fome!
-            </p>
-        {% endif %}
+        <div class="container">
+            <h1>Entregator</h1>
+        </div>
     </div>
 </section>
 {% endblock top %}
 
 
 {% block main %}
-    <form class="user-form" action="{{url_for('site.checkout', loja=loja, item=item)}}" method="POST" enctype="multipart/form-data">    
-        {{form.csrf_token}}
-        
-        <h1>Comida escolhida: {{comida.name}}</h1>
-    
-        {{form.quant.label}}<br>
-        {{form.quant(size=20)}}<br>
-    
-        <input type="submit" value="Adicionar">
-    </form>
-
+<h1>
+    Seu pedido foi enviado ao restaurante {{loja}}!
+</h1>
+<ul>
+    {% for item in items_list %}
+        <li>{{item.quantidade}} de {{item.name}} > R${{item.preco}}</li>
+    {% endfor %}
+</ul>
+<h2>Totalizando R${{tot}}</h2>
+<h2>Pagamento em {{pag}}</h2>
 {% endblock main %}

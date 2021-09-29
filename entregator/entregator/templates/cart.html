@@ -25,17 +25,34 @@
 
 
 {% block main %}
-    <div class="content is-normal">
-        <h1>O número do seu pedido é {{ order.id }}, ele contém:</h1>
-        
-        <ul>
-            {% for item in order_items %}
-            <li>{{ item.quantidade }} - {{ item.name }}: R${{ item.preco }} cada</li>
-            <form action="{{url_for('site.remove', item=item.id)}}" method="POST">
-                <input type="submit" value="Remover" />
+    <div class="columns is-desktop">
+        <div class="column is-half">
+            <h1>O número do seu pedido é {{ order.id }}, ele contém:<br>
+            
+            <ul>
+                {% for item in order_items %}
+                <li>{{ item.quantidade }} - {{ item.name }}: R${{ item.preco }} cada</li>
+                <form action="{{url_for('site.remove', item=item.id)}}" method="POST">
+                    <input type="submit" value="Remover" />
+                </form>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="column is-half">
+            <form action="{{url_for('site.checkout', order=order.id)}}" method="POST">
+                <div class="select">
+                    <select name='pagamento'>
+                        <option value='Dinheiro'>Dinheiro na entrega</option>
+                        <option value='Débito'>Débito</option>
+                        <option value='Crédito'>Crédito</option>
+                    </select>
+                </div>
+                <h1><br>
+
+                <h1>TOTAL: R${{tot}}</h1>
+                <input type="submit" value="Finalizar pedido" />
             </form>
-            <!-- <button class="button is-light" href="{{url_for('site.remove', item=item.id)}}">Remover</button> -->
-            {% endfor %}
-        </ul>
+                
+        </div>
     </div>
 {% endblock main %}

@@ -109,3 +109,10 @@ class AddressAdmin(ModelView):
     can_edit = False
     can_create = True
     can_delete = True
+
+
+class CheckoutAdmin(ModelView):
+
+    can_edit = True
+    can_create = True
+    can_delete = True
