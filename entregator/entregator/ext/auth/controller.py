@@ -58,6 +58,15 @@ def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItem
     return order_items
 
 
+def alter_order_items(id = int, quant = int) -> OrderItems:
+    order_items = OrderItems.query.filter_by(id=id).first()
+    order_items.quant += quant
+
+    db.session.commit()
+        
+    return order_items
+
+
 def delete_order_items(items_id = int) -> OrderItems:
     OrderItems.query.filter_by(id=items_id).delete()
     db.session.commit()
