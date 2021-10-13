@@ -18,7 +18,7 @@ class MyAdminIndexView(AdminIndexView):
 
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
-        flash('Você não possui permissão para acessar. Entre com um perfil de administrador')
+        flash('Você não possui permissão para acessar. Entre com um perfil de administrador', 'error')
         return redirect(url_for('site.index'))
 
 

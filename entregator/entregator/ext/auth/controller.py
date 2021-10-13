@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import current_app as app
 from flask import flash
 from sqlalchemy.exc import IntegrityError
-from entregator.ext.db.models import Checkout, Items, Order, OrderItems, User
+from entregator.ext.db.models import Checkout, Items, Order, OrderItems, User, Address
 from entregator.ext.db import db
 
 
@@ -30,8 +30,17 @@ def save_user_photo(filename, filestorage):
     filestorage.save(filename)
 
 
-def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, user_id = int, store_id = int, address_id = int) -> Order:
-    order = Order(created_at=created_at, completed=completed, user_id=user_id, store_id=store_id, address_id=address_id)
+def add_address(zip, country, address, user_id):
+    endereco = Address(zip=zip, country=country, address=address, user_id=user_id)
+
+    db.session.add(endereco)
+    db.session.commit()
+
+    return endereco
+
+
+def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, expired: bool=False, user_id = int, store_id = int, address_id = int) -> Order:
+    order = Order(created_at=created_at, completed=completed, expired=expired, user_id=user_id, store_id=store_id, address_id=address_id)
     
     db.session.add(order)
     db.session.commit()
@@ -66,6 +75,13 @@ def alter_order_items(id = int, quant = int) -> OrderItems:
         
     return order_items
 
+
+def delete_order_items(items_id = int) -> OrderItems:
+    OrderItems.query.filter_by(id=items_id).delete()
+    db.session.commit()
+        
+    return 'Item removido do carrinho!'
+        
 
 def delete_order_items(items_id = int) -> OrderItems:
     OrderItems.query.filter_by(id=items_id).delete()

@@ -1,7 +1,8 @@
 import click
+from tabulate import tabulate
 from entregator.ext.db import db, models
 from entregator.ext.auth.controller import create_user
-from tabulate import tabulate
+
 
 def init_app(app):
 

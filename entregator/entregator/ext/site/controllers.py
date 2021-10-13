@@ -1,6 +1,4 @@
-from flask_login import current_user
-
-from entregator.ext.db.models import Address, Category, Items, Order, OrderItems, Store, User
+from entregator.ext.db.models import Address, Category, Items, OrderItems, Store
 from entregator.ext.auth.controller import alter_order, create_order, alter_order_items, create_order_items
 
 
@@ -27,11 +25,11 @@ def cart_params(order_id):
     return items_list, tot
 
 
-def evaluate_order(loja, order):
-    endereco = Address.query.filter_by(user_id=current_user.id).first()
+def evaluate_order(loja, order, user):
+    endereco = Address.query.filter_by(user_id=user).first()
 
-    if order == None or order.completed: 
-        order = create_order(user_id=current_user.id, store_id=loja, address_id=endereco)
+    if order == None or order.completed or order.expired: 
+        order = create_order(user_id=user, store_id=loja, address_id=endereco.id)
     else:
         if int(loja) != order.store_id:
             ordered_items = OrderItems.query.filter_by(order_id=order.id).all()

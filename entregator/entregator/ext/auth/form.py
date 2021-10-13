@@ -8,6 +8,11 @@ class UserForm(FlaskForm):
     passwd = wtf.PasswordField('Senha', [wtf.validators.DataRequired()])
     foto = FileField('Foto')
 
+class AddressForm(FlaskForm):
+    zip = wtf.StringField("Zip Code", [wtf.validators.Length(3,45)])
+    country = wtf.StringField()
+    address = wtf.StringField("Address", [wtf.validators.Length(min=5)])
+
 class OrderForm(FlaskForm):
     #O QUE PREENCHER NSAS FUNÇÕES ABAIXO
     #ADICIONAR UM ESPAÇO PARA OS ITENS DO PEDIDO

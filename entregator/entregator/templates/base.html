@@ -98,25 +98,26 @@
 
         {% block top %} {% endblock top %}
 
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(category_filter=["error"]) %}
             {% if messages %}
-                {% if 'incorretos' in messages[0] or 'outro' in messages[0] or 'Não' in messages[0] or 'apenas' in messages[0] %}
-                    <div class='notification is-warning'>
-                        <ul class=flashes>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-                {% else %}
-                    <div class='notification is-success'>
-                        <ul class=flashes>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+                <div class='notification is-warning'>
+                    <ul class=flashes>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% with messages = get_flashed_messages(category_filter=["info"]) %}
+            {% if messages %}
+                <div class='notification is-success'>
+                    <ul class=flashes>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
             {% endif %}
         {% endwith %}
 

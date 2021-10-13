@@ -8,7 +8,8 @@ EXTENSIONS = [
     'entregator.ext.admin:init_app',
     'entregator.ext.cli:init_app',
     'entregator.ext.site:init_app',
-    'entregator.ext.hooks:init_app'
+    'entregator.ext.hooks:init_app',
+    'entregator.ext.ttl:init_app'
 ]
 UPLOAD_FOLDER = 'uploads'
 
@@ -27,7 +28,8 @@ EXTENSIONS = [
     'entregator.ext.cli:init_app',
     'entregator.ext.toolbar:init_app',
     'entregator.ext.site:init_app',
-    'entregator.ext.hooks:init_app'
+    'entregator.ext.hooks:init_app',
+    'entregator.ext.ttl:init_app'
 ]
 
 [production]

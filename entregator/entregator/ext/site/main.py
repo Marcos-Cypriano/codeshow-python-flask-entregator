@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, redirect, request, flash, url_for
-from entregator.ext.site.controllers import cart_params, evaluate_items_order, evaluate_order
 from flask_login import login_user, logout_user, current_user
 
-from entregator.ext.auth.form import OrderItemsForm, UserForm
-from entregator.ext.db.models import Category, Items, Order, OrderItems, Store, User
-from entregator.ext.auth.controller import complete_order, create_checkout, create_user, delete_order_items, save_user_photo 
+
+from entregator.ext.auth.form import OrderItemsForm, UserForm, AddressForm
+from entregator.ext.db.models import Address, Category, Items, Order, Store, User
+from entregator.ext.site.controllers import cart_params, evaluate_items_order, evaluate_order
+from entregator.ext.auth.controller import add_address, complete_order, create_checkout, create_user, delete_order_items, save_user_photo 
 
 bp = Blueprint('site', __name__)
 
@@ -46,7 +47,6 @@ def signup():
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     categories = Category.query.all()
-
     form = UserForm()
 
     if form.validate_on_submit():
@@ -54,18 +54,35 @@ def login():
 
         if user and user.passwd == form.passwd.data:
             login_user(user)
-            flash('Login com sucesso!')
+            flash('Login com sucesso!', 'info')
             return redirect(url_for('site.index'))
         else:
-            flash('Usuário ou senha incorretos!')
+            flash('Usuário ou senha incorretos!', 'error')
 
     return render_template('login.html', form = form, categories=categories)
 
 
+@bp.route('/address', methods=['GET', 'POST'])
+def address():
+    categories = Category.query.all()
+    form = AddressForm()
+
+    if current_user.is_active:
+        if form.validate_on_submit():
+            add_address(zip=form.zip.data, country=form.country.data, address=form.address.data, user_id=current_user.id)
+            flash('Endereço cadastrado com sucesso!', 'info')
+            return redirect('/') 
+
+        return render_template('address.html', form = form, categories=categories)
+    else:
+        flash('Você precisa estar logado para cadastrar um endereço!', 'error')
+        return redirect('/login') 
+ 
+
 @bp.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
-    flash('Logout com sucesso!')
+    flash('Logout com sucesso!', 'info')
     return redirect(url_for('site.index'))
 
 
@@ -104,14 +121,18 @@ def cart_order(loja, item):
     categories = Category.query.all()
 
     if not current_user.is_active:
-        flash('Você precisa estar logado para adicionar uma comida ao carrinho!')
+        flash('Você precisa estar logado para adicionar uma comida ao carrinho!', 'error')
         return redirect('/login')
     else:
+        if not Address.query.filter_by(user_id=current_user.id).first():
+            flash('Você precisa cadastrar um endereço antes de pedir.', 'error')
+            return redirect('/address')
+
         order = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).first()
 
-        frase = evaluate_order(loja=loja, order=order)
-        if frase:
-            flash(frase)
+        aviso = evaluate_order(loja=loja, order=order, user=current_user.id)
+        if aviso:
+            flash(aviso)
             return redirect('/')
 
         comida = Items.query.filter_by(id=item).first()
@@ -130,8 +151,8 @@ def cart():
 
     order = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).first()
 
-    if order.completed:
-        flash('Não há um pedido aberto.')
+    if order == None or order.completed or order.expired:
+        flash('Não há um pedido aberto.', 'error')
         return redirect('/')
     else:
         items_list, tot = cart_params(order.id)
@@ -152,7 +173,7 @@ def checkout(order):
     try:
         complete_order(order_id=order, completed=True)
     except:
-        flash('Pedido não pode ser confirmado!')
+        flash('Pedido não pode ser confirmado!', 'error')
         return render_template('/checkout.html')
 
     value = request.form.get('pagamento')
@@ -163,7 +184,5 @@ def checkout(order):
     
     checkout = create_checkout(payment=value, order_id=order)
     
-    flash('Pedido confirmado! Aguarde mais informações diretamente do restaurante.')
+    flash('Pedido confirmado! Aguarde mais informações diretamente do restaurante.', 'info')
     return render_template('/checkout.html', loja=loja.name, items_list=items_list, tot=checkout.total, pag=checkout.payment)
-
-    
