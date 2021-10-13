@@ -24,7 +24,7 @@ def expirer_order() -> Order:
         orders = Order.query.filter(Order.created_at < deadline, Order.completed == 0).all()
         for order in orders:
             order.expired = 1
-            db.session.commit()
+            db.commit()
 
     return f'{len(orders)} pedidos foram expirados.'
 

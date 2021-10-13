@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block top %}
+<section class="hero is-primary">
+    <div class="hero-body">
+        {% if current_user.is_active %}
+            <p class="title">
+                Olá <strong>{{ current_user }}</strong>
+            </p>
+            <p class="subtitle">
+                Estes são os locais que você tem cadastrado!
+            </p>
+        {% else %}
+            <p class="title">
+                <strong>Entregator</strong>
+            </p>
+            <p class="subtitle">
+                É hora de comer!
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock top %}
+
+
+{% block main %}
+    <strong>Endereços</strong>
+    <div class="columns is-multiline is-mobile">
+        {% if enderecos %}
+            {% for endereco in enderecos %}
+                <div class="column is-one-quarter">  
+                    <div class="card">
+                        <div class="card-content">
+                            <ul>
+                                <li>
+                                    {{ endereco.address }}
+                                </li>
+                                <li>
+                                    {{ endereco.country }}
+                                </li>
+                                <li>
+                                    {{ endereco.zip }}
+                                </li>
+                            </ul>
+                            
+                            <br>
+                            <a class="button is-light" href="">Apagar endereço</a>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="column is-one-quarter">  
+            <div class="card">
+                <div class="card-content">
+                    <a class="button is-light" href="/endereco">Cadastrar outro endereço</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% if lista %}
+    <strong>Pedidos antigos</strong>
+    <div class="columns is-multiline is-mobile">
+        {% for pedido in lista %}
+        <div class="column is-one-quarter">  
+            <div class="card">
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <strong>Restaurante {{ pedido['restaurante'] }}</strong>
+                        </li>
+                        {% for item in pedido['items'] %}
+                            <li>
+                                {{ item['quantidade']}} - {{ item['name'] }}
+                            </li>
+                        {% endfor %}
+                        <li>
+                            Valor do pedido <R1></R1>{{ pedido['total'] }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+     
+{% endblock main %}

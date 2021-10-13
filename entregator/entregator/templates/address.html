@@ -3,28 +3,38 @@
 {% block top %}
 <section class="hero is-primary">
     <div class="hero-body">
-        <div class="container">
-            <h1>Entre na sua conta!</h1>
-        </div>
+        {% if current_user.is_active %}
+            <p class="title">
+                Olá <strong>{{ current_user }}</strong>
+            </p>
+            <p class="subtitle">
+                Estes são os locais que você tem cadastrado!
+            </p>
+        {% else %}
+            <p class="title">
+                <strong>Entregator</strong>
+            </p>
+            <p class="subtitle">
+                É hora de comer!
+            </p>
+        {% endif %}
     </div>
 </section>
 {% endblock top %}
 
 
 {% block main %}
+    <form class="user-form" action="{{url_for('site.address')}}" method="POST" enctype="multipart/form-data">
+        {{form.csrf_token}}
+        
+        {{form.zip.label}}<br>
+        {{form.zip(size=20)}}<br>
 
-<form class="user-form" action="{{url_for('site.login')}}" method="POST" enctype="multipart/form-data">
-    {{form.csrf_token}}
-    
-    {{form.zip.label}}<br>
-    {{form.zip(size=20)}}<br>
+        {{form.country.label}}<br>
+        {{form.country(size=20)}}<br>
 
-    {{form.country.label}}<br>
-    {{form.country(size=20)}}<br>
-
-    {{form.address.label}}<br>
-    {{form.address(size=100)}}<br>
-    <input type="submit" value="Cadastrar">
-</form>
-
+        {{form.address.label}}<br>
+        {{form.address(size=100)}}<br>
+        <input type="submit" value="Cadastrar">
+    </form>   
 {% endblock main %}

@@ -30,12 +30,14 @@ def signup():
     form = UserForm()
 
     if form.validate_on_submit():
-        create_user(email=form.email.data, passwd=form.passwd.data)
+        user = create_user(email=form.email.data, passwd=form.passwd.data)
 
         foto = request.files.get('foto')
         if foto:
             save_user_photo(foto.filename, foto)
-        #Forçar o Login
+        
+        login_user(user)
+        flash('Usuário cadastrado com sucesso! Não se esqueça de cadastrar um enredeço.', 'info')
         return redirect('/')
 
     '''if request.method == 'POST':
@@ -61,22 +63,41 @@ def login():
 
     return render_template('login.html', form = form, categories=categories)
 
-
-@bp.route('/address', methods=['GET', 'POST'])
-def address():
+@bp.route('/perfil')
+def profile():
     categories = Category.query.all()
-    form = AddressForm()
 
     if current_user.is_active:
+        enderecos = Address.query.filter_by(user_id=current_user.id).all()
+        pedidos = Order.query.filter_by(user_id=current_user.id, completed=1, expired=0).all()
+        if pedidos:
+            lista = []
+            for pedido in pedidos:
+                items_list, tot = cart_params(pedido.id)
+                lista.append({'items': items_list, 'total': tot, 'restaurante': pedido.store})
+
+                return render_template('profile.html', enderecos=enderecos, lista=lista, categories=categories)
+        else:
+            return render_template('profile.html', enderecos=enderecos, categories=categories)
+            
+    else:
+        flash('Você precisa estar logado para acessar um perfil!', 'error')
+        return redirect('/login')
+      
+
+@bp.route('/endereco', methods=['GET', 'POST'])
+def address():
+        categories = Category.query.all()
+
+        form = AddressForm()
+
         if form.validate_on_submit():
             add_address(zip=form.zip.data, country=form.country.data, address=form.address.data, user_id=current_user.id)
             flash('Endereço cadastrado com sucesso!', 'info')
-            return redirect('/') 
-
-        return render_template('address.html', form = form, categories=categories)
-    else:
-        flash('Você precisa estar logado para cadastrar um endereço!', 'error')
-        return redirect('/login') 
+            return redirect('/perfil')
+        else:
+            return render_template('address.html', form = form, categories=categories)
+         
  
 
 @bp.route('/logout', methods=['GET', 'POST'])

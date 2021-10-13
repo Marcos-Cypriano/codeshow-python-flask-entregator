@@ -71,12 +71,18 @@
                             <a class="button is-primary" href="{{url_for('site.cart')}}">
                                 <strong>Carrinho</strong>
                             </a>
+                            <a class="button is-primary" href="{{url_for('site.profile')}}">
+                                <strong>Perfil</strong>
+                            </a>
                             <a class="button is-light" href="{{url_for('site.logout')}}">
                                 Log out
                             </a>
                         {% elif current_user.is_active %}
                             <a class="button is-primary" href="{{url_for('site.cart')}}">
                                 <strong>Carrinho</strong>
+                            </a>
+                            <a class="button is-primary" href="{{url_for('site.profile')}}">
+                                <strong>Perfil</strong>
                             </a>
                             <a class="button is-light" href="{{url_for('site.logout')}}">
                                 Log out
