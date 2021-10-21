@@ -25,34 +25,54 @@
 
 
 {% block main %}
-    <div class="columns is-desktop">
+    <div class="columns is-multiline is-mobile">
         <div class="column is-half">
-            <h1>O número do seu pedido é {{ order.id }}, ele contém:<br>
-            
-            <ul>
-                {% for item in order_items %}
-                <li>{{ item.quantidade }} - {{ item.name }}: R${{ item.preco }} cada</li>
-                <form action="{{url_for('site.remove', item=item.id)}}" method="DELETE">
-                    <input type="submit" value="Remover" />
-                </form>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="column is-half">
-            <form action="{{url_for('site.checkout', order=order.id)}}" method="POST">
-                <div class="select">
-                    <select name='pagamento'>
-                        <option value='Dinheiro'>Dinheiro na entrega</option>
-                        <option value='Débito'>Débito</option>
-                        <option value='Crédito'>Crédito</option>
-                    </select>
-                </div>
-                <h1><br>
+            <h1>O seu pedido no restaurante <a href="{{url_for('site.page_restaurant', loja=loja.id)}}">{{loja}}</a> contém:
+                <br><br>
+            {% for item in order_items %}
+                <div class='card'>
 
-                <h1>TOTAL: R${{tot}}</h1>
-                <input type="submit" value="Finalizar pedido" />
-            </form>
-                
+                    {{ item.quantidade }} - {{ item.name }}: R${{ item.preco }} cada
+                    <footer class="card-footer">
+                        <a href="{{url_for('site.page_item', item=item.item_id)}}" class="card-footer-item">Alterar quantidade</a>
+                        <a href="{{url_for('site.remove', item=item.id)}}" method="DELETE" class="card-footer-item">Remover prato</a>
+                    </footer>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+        <div class="column is-one-quarter">
+            <div class="card">
+                <div class="has-text-centered">
+                    <h1>Informações do pedido:</h1>
+                    <br>
+                    <form action="{{url_for('site.checkout', order=order.id)}}" method="POST">
+                        <div class="select">
+                            <select name='endereco'>
+                                {% if enderecos %}
+                                    {% for local in enderecos %}
+                                        <option value={{local.id}}>{{ local.address }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <a href="{{url_for('site.address')}}">Cadastre um endereço!</a>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <br><br>
+                        <div class="select">
+                            <select name='pagamento'>
+                                <option value='Dinheiro'>Dinheiro na entrega</option>
+                                <option value='Débito'>Débito</option>
+                                <option value='Crédito'>Crédito</option>
+                            </select>
+                        </div>
+                        <br><br>
+                        <h1>TOTAL: R${{tot}}</h1>
+                        <br>
+                        <input type="submit" class="button is-light" value="Finalizar pedido" />
+                    </form> 
+                </div>
+            </div>
         </div>
     </div>
 {% endblock main %}

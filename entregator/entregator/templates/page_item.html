@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block top %}
+<section class="hero is-primary">
+    <div class="hero-body">
+        {% if current_user.is_active %}
+            <p class="title">
+                Olá <strong>{{ current_user }}</strong>
+            </p>
+            <p class="subtitle">
+                {{ loja }} está pronto para matar sua fome!
+            </p>
+        {% else %}
+            <p class="title">
+                <strong>Entregator</strong>
+            </p>
+            <p class="subtitle">
+                Para pedir algo do {{ loja }} você precisa estar logado!
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock top %}
+
+
+{% block main %}
+    <div class="columns is-multiline is-mobile is-centered">
+        <div class="column is-half">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-left">
+                            <figure class="image is-48x48">
+                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <p class="title is-4">{{ foods.name }}</p>
+                            <p class="subtitle is-6">{{ foods.price }}</p>
+                        </div>
+                    </div>
+                    <div class="content">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Phasellus nec iaculis mauris.
+                        <br>
+
+                        <form class="user-form" action="{{url_for('site.page_item', item=foods.id)}}" method="POST" enctype="multipart/form-data">    
+                            {{form.csrf_token}}
+                        
+                            {{ form.quant(size=20, placeholder="Quantidade") }}<br>
+                            <br>
+                        
+                            <input type="submit" class="button is-light" value="Adicionar ao carrinho">
+                        </form>
+
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+{% endblock main %}

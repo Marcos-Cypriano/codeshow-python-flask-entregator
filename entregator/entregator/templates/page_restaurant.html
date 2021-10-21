@@ -16,7 +16,7 @@
                 <strong>Entregator</strong>
             </p>
             <p class="subtitle">
-                {{ loja }} está pronto para matar sua fome!
+                Para pedir algo do {{ loja }} você precisa estar logado!
             </p>
         {% endif %}
     </div>
@@ -25,7 +25,7 @@
 
 
 {% block main %}
-    {% if stores %}
-        {{ list_item.cards(stores) }}
+    {% if foods %}
+        {{ list_item.cards(foods) }}
     {% endif %}
 {% endblock main %}

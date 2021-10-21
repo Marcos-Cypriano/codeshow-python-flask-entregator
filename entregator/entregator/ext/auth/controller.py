@@ -39,7 +39,7 @@ def add_address(zip, country, address, user_id):
     return endereco
 
 
-def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, expired: bool=False, user_id = int, store_id = int, address_id = int) -> Order:
+def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, expired: bool=False, user_id = int, store_id = int, address_id: int=None) -> Order:
     order = Order(created_at=created_at, completed=completed, expired=expired, user_id=user_id, store_id=store_id, address_id=address_id)
     
     db.session.add(order)
@@ -58,6 +58,15 @@ def alter_order(created_at: datetime=datetime.datetime.now(), id = int, store_id
     return order
 
 
+def alter_address_order(id= int, address_id = int) -> Order:
+    order = Order.query.filter_by(id=id).first()
+    order.address_id = address_id
+    
+    db.session.commit()
+        
+    return order
+
+
 def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItems:
     order_items = OrderItems(order_id=order_id, items_id=items_id, quant=quant)
     
@@ -69,7 +78,7 @@ def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItem
 
 def alter_order_items(id = int, quant = int) -> OrderItems:
     order_items = OrderItems.query.filter_by(id=id).first()
-    order_items.quant += quant
+    order_items.quant = quant
 
     db.session.commit()
         
@@ -83,8 +92,8 @@ def delete_order_items(items_id = int) -> OrderItems:
     return 'Item removido do carrinho!'
         
 
-def delete_order_items(items_id = int) -> OrderItems:
-    OrderItems.query.filter_by(id=items_id).delete()
+def delete_address(endereco = int) -> Address:
+    Address.query.filter_by(id=endereco).delete()
     db.session.commit()
         
     return 'Item removido do carrinho!'

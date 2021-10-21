@@ -1,7 +1,7 @@
 import datetime
 from flask import current_app
 from flask_apscheduler import APScheduler as _BaseAPScheduler
-from entregator.ext import db
+from entregator.ext.db import db
 from entregator.ext.db.models import Order
 
 
@@ -24,7 +24,7 @@ def expirer_order() -> Order:
         orders = Order.query.filter(Order.created_at < deadline, Order.completed == 0).all()
         for order in orders:
             order.expired = 1
-            db.commit()
+            db.session.commit()
 
     return f'{len(orders)} pedidos foram expirados.'
 

@@ -17,9 +17,10 @@
 </h1>
 <ul>
     {% for item in items_list %}
-        <li>{{item.quantidade}} de {{item.name}} > R${{item.preco}}</li>
+        <li>{{item.quantidade}} de {{item.name}}</li>
     {% endfor %}
 </ul>
+<h2>Para serem entregues no endereço {{ endereco.address }}</h2>
 <h2>Totalizando R${{tot}}</h2>
 <h2>Pagamento em {{pag}}</h2>
 {% endblock main %}
