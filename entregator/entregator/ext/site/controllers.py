@@ -19,7 +19,7 @@ def cart_params(order_id):
     items_list = []
     tot = 0
     for item in order_items:
-        prato = Items.query.filter_by(id=item.items_id).first()
+        prato = Items.query.get(item.items_id)
         items_list.append({'name': prato.name, 'quantidade': item.quant, 'preco': prato.price, 'id': item.id, 'item_id': prato.id})
         tot += prato.price * item.quant
     return items_list, tot

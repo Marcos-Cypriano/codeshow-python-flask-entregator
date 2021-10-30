@@ -49,7 +49,7 @@ def create_order(completed: bool=False, expired: bool=False, user_id = int, stor
 
 
 def alter_order(created_at: datetime=datetime.datetime.utcnow(), id = int, store_id = int) -> Order:
-    order = Order.query.filter_by(id=id).first()
+    order = Order.query.get(id)
     order.store_id = store_id
     order.created_at = created_at
     
@@ -59,7 +59,7 @@ def alter_order(created_at: datetime=datetime.datetime.utcnow(), id = int, store
 
 
 def alter_address_order(id= int, address_id = int) -> Order:
-    order = Order.query.filter_by(id=id).first()
+    order = Order.query.get(id)
     order.address_id = address_id
     
     db.session.commit()
@@ -77,7 +77,7 @@ def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItem
 
 
 def alter_order_items(id = int, quant = int) -> OrderItems:
-    order_items = OrderItems.query.filter_by(id=id).first()
+    order_items = OrderItems.query.get(id)
     order_items.quant = quant
 
     db.session.commit()
@@ -100,7 +100,7 @@ def delete_address(endereco = int) -> Address:
 
 
 def complete_order(order_id = int, completed = bool) -> Order:
-    order = Order.query.filter_by(id=order_id).first()
+    order = Order.query.get(order_id)
     order.completed = completed
 
     db.session.commit()
@@ -113,7 +113,7 @@ def create_checkout(payment = str, completed: bool=False, order_id = int):
     tot = 0
     items_list = []
     for item in items:
-        prato = Items.query.filter_by(id=item.items_id).first()
+        prato = Items.query.get(item.items_id)
         items_list.append({'name': prato.name, 'quantidade': item.quant})
         tot += prato.price * item.quant
 
