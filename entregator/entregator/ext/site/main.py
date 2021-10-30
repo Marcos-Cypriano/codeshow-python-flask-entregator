@@ -38,7 +38,7 @@ def signup():
         
         login_user(user)
         flash('Usuário cadastrado com sucesso! Não se esqueça de cadastrar um enredeço.', 'info')
-        return redirect('/')
+        return redirect(url_for('site.index'))
 
     '''if request.method == 'POST':
         __import__('ipdb').set_trace()'''
@@ -83,7 +83,7 @@ def profile():
             
     else:
         flash('Você precisa estar logado para acessar um perfil!', 'error')
-        return redirect('/login')
+        return redirect(url_for('site.login'))
       
 
 @bp.route('/endereco', methods=['GET', 'POST'])
@@ -95,7 +95,7 @@ def address():
         if form.validate_on_submit():
             add_address(zip=form.zip.data, country=form.country.data, address=form.address.data, user_id=current_user.id)
             flash('Endereço cadastrado com sucesso!', 'info')
-            return redirect('/perfil')
+            return redirect(url_for('site.profile'))
         else:
             return render_template('address.html', form=form, categories=categories)
 
@@ -104,7 +104,7 @@ def address():
 def remove_address(endereco):
     frase = delete_address(endereco)
     flash(frase)
-    return redirect('/perfil')
+    return redirect(url_for('site.profile'))
          
  
 
@@ -157,7 +157,7 @@ def page_item(item):
         if form.validate_on_submit():
             if form.quant.data == None or form.quant.data == 0:
                 flash('Você precisa adicionar uma quantidade ao prato escolhido!', 'error')
-                return redirect(url_for('site.page_item', itme=item))
+                return redirect(url_for('site.page_item', item=item))
             else:
                 order = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).first()
 
@@ -188,7 +188,7 @@ def cart():
 
     if order == None or order.completed or order.expired:
         flash('Não há um pedido aberto.', 'error')
-        return redirect('/')
+        return redirect(url_for('site.index'))
     else:
         items_list, tot = cart_params(order.id)
 
@@ -201,7 +201,7 @@ def remove(item):
     frase = delete_order_items(item)
     flash(frase)
 
-    return redirect('/meu-carrinho')
+    return redirect(url_for('site.cart'))
 
 
 @bp.route('/confirmado/<order>', methods=['GET', 'POST'])

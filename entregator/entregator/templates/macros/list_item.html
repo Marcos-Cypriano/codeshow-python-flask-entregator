@@ -33,7 +33,7 @@
                     </div>
                 </a>
             {% else %}
-                <a href="/comida/{{ item.id }}">
+                <a href="{{ url_for('site.page_item', item=item.id) }}">
                     <div class="card">
                         <div class="card-image">
                             <figure class="image is-4by3">
