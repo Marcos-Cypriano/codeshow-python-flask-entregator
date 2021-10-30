@@ -39,8 +39,8 @@ def add_address(zip, country, address, user_id):
     return endereco
 
 
-def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=False, expired: bool=False, user_id = int, store_id = int, address_id: int=None) -> Order:
-    order = Order(created_at=created_at, completed=completed, expired=expired, user_id=user_id, store_id=store_id, address_id=address_id)
+def create_order(completed: bool=False, expired: bool=False, user_id = int, store_id = int, address_id: int=None) -> Order:
+    order = Order(completed=completed, expired=expired, user_id=user_id, store_id=store_id, address_id=address_id)
     
     db.session.add(order)
     db.session.commit()
@@ -48,7 +48,7 @@ def create_order(created_at: datetime=datetime.datetime.now(), completed: bool=F
     return order
 
 
-def alter_order(created_at: datetime=datetime.datetime.now(), id = int, store_id = int) -> Order:
+def alter_order(created_at: datetime=datetime.datetime.utcnow(), id = int, store_id = int) -> Order:
     order = Order.query.filter_by(id=id).first()
     order.store_id = store_id
     order.created_at = created_at
@@ -108,8 +108,7 @@ def complete_order(order_id = int, completed = bool) -> Order:
     return order
 
 
-def create_checkout(payment = str, total = float, created_at: datetime=datetime.datetime.now(), completed: bool=False, order_id = int):
-    #order = Order.query.filter_by(id=order_id).first()
+def create_checkout(payment = str, completed: bool=False, order_id = int):
     items = OrderItems.query.filter_by(order_id=order_id).all()
     tot = 0
     items_list = []
@@ -118,7 +117,7 @@ def create_checkout(payment = str, total = float, created_at: datetime=datetime.
         items_list.append({'name': prato.name, 'quantidade': item.quant})
         tot += prato.price * item.quant
 
-    checkout = Checkout(payment=payment, total=tot, created_at=created_at, completed=completed, order_id=order_id)
+    checkout = Checkout(payment=payment, total=tot, completed=completed, order_id=order_id)
 
     db.session.add(checkout)
     db.session.commit()

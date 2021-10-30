@@ -1,5 +1,5 @@
-from entregator.ext.db.models import Address, Category, Items, OrderItems, Store, Order
-from entregator.ext.auth.controller import alter_order, create_order, alter_order_items, create_order_items
+from entregator.ext.db.models import Category, Items, OrderItems, Store
+from entregator.ext.auth.controller import alter_order, alter_order_items, create_order_items
 
 
 def categorias_menu():

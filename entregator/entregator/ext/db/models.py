@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from entregator.ext.db import db
 from entregator.ext.admin import login_manager
 
@@ -13,10 +15,6 @@ class User(db.Model):
     passwd = db.Column('passwd', db.Unicode)
     admin = db.Column('admin', db.Boolean)
 
-    '''def save(self):
-        db.session.add(self)
-        db.session.commit()'''
-    
     #PROPRIEDADES DO FLASK-LOGIN    
     @property
     def is_authenticated(self):
@@ -79,7 +77,7 @@ class Items(db.Model):
 class Order(db.Model):
     __tablename__ = "order"
     id = db.Column('id', db.Integer, primary_key=True)
-    created_at = db.Column('created_at', db.DateTime)
+    created_at = db.Column('created_at', db.DateTime, index=True, default=datetime.utcnow)
     completed = db.Column('completed', db.Boolean)
     expired = db.Column('expired', db.Boolean)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
@@ -109,7 +107,7 @@ class Checkout(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     payment = db.Column('payment', db.Unicode)
     total = db.Column('total', db.Numeric(4,2))
-    created_at = db.Column('created_at', db.DateTime)
+    created_at = db.Column('created_at', db.DateTime, index=True, default=datetime.utcnow)
     completed = db.Column('completed', db.Boolean)
     order_id = db.Column('order_id', db.Integer, db.ForeignKey('order.id'))
 
