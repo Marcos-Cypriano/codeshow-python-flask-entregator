@@ -16,7 +16,9 @@ UPLOAD_FOLDER = 'uploads'
 [development]
 DEBUG = true
 SQLALCHEMY_DATABASE_URI = 'sqlite:///entregator.db'
-SQLALCHEMY_TRACK_MODIFICATIONS = false
+SQLALCHEMY_TRACK_MODIFICATIONS = true
+WHOOSH_INDEX_PATH='whooshIndex'
+WHOOSH_ANALYZER='StemmingAnalyzer'
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = true
 DEBUG_TB_PROFILER_ENABLED = true
 DEBUG_TB_INTERCEPT_REDIRECTS = false
@@ -28,10 +30,11 @@ EXTENSIONS = [
     'entregator.ext.cli:init_app',
     'entregator.ext.toolbar:init_app',
     'entregator.ext.site:init_app',
+    'entregator.ext.search:init_app',
     'entregator.ext.hooks:init_app',
     'entregator.ext.ttl:init_app'
 ]
 
 [production]
 SQLALCHEMY_TRACK_MODIFICATIONS = false  
-SQLALCHEMY_DATABASE_URI = 'postgresql://izcjuulowmlxxx:6e6b2bd37d7c99a895d77e19bfe9fb55a2332a8267585b17fab5ffc83c7633e7@ec2-3-227-181-85.compute-1.amazonaws.com:5432/d4773qaputqbmq'
+SQLALCHEMY_DATABASE_URI = 'postgresql://'

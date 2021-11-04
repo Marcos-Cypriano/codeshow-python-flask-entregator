@@ -133,3 +133,6 @@ delivery/delivery/delivery.db
 
 #Sensible informations
 */**.secrets.*
+
+#Whooshalchemy index
+whooshIndex

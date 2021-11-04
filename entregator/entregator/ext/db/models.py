@@ -1,4 +1,6 @@
 from datetime import datetime
+import flask_whooshalchemy3
+from whoosh.analysis import StemmingAnalyzer
 
 from entregator.ext.db import db
 from entregator.ext.admin import login_manager
@@ -10,6 +12,7 @@ def load_user(user_id):
 
 class User(db.Model):
     __tablename__ = "user"
+
     id = db.Column('id', db.Integer, primary_key=True)
     email = db.Column('email', db.Unicode, unique=True)
     passwd = db.Column('passwd', db.Unicode)
@@ -36,6 +39,7 @@ class User(db.Model):
 
 class Category(db.Model):
     __tablename__ = "category"
+
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Unicode, unique=True)
     on_menu = db.Column('on_menu', db.Boolean)
@@ -46,6 +50,9 @@ class Category(db.Model):
 
 class Store(db.Model):
     __tablename__ = "store"
+    __searchable__ = ['name']
+    __analyzer__ = StemmingAnalyzer()
+
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Unicode, unique=True)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
@@ -61,6 +68,9 @@ class Store(db.Model):
 
 class Items(db.Model):
     __tablename__ = "items"
+    __searchable__ = ['name']
+    __analyzer__ = StemmingAnalyzer()
+
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Unicode)
     image = db.Column('image', db.Unicode)
@@ -76,6 +86,7 @@ class Items(db.Model):
 
 class Order(db.Model):
     __tablename__ = "order"
+
     id = db.Column('id', db.Integer, primary_key=True)
     created_at = db.Column('created_at', db.DateTime, index=True, default=datetime.utcnow)
     completed = db.Column('completed', db.Boolean)
@@ -93,6 +104,7 @@ class Order(db.Model):
 
 class OrderItems(db.Model):
     __tablename__ = "order_items"
+
     id = db.Column('id', db.Integer, primary_key=True)
     order_id = db.Column('order_id', db.Integer, db.ForeignKey('order.id'))
     items_id = db.Column('items_id', db.Integer, db.ForeignKey('items.id'))
@@ -104,6 +116,7 @@ class OrderItems(db.Model):
 
 class Checkout(db.Model):
     __tablename__ = "checkout"
+
     id = db.Column('id', db.Integer, primary_key=True)
     payment = db.Column('payment', db.Unicode)
     total = db.Column('total', db.Numeric(4,2))
@@ -116,6 +129,7 @@ class Checkout(db.Model):
 
 class Address(db.Model):
     __tablename__ = "address"
+
     id = db.Column('id', db.Integer, primary_key=True)
     zip = db.Column('zip', db.Unicode)
     country = db.Column('country', db.Unicode)

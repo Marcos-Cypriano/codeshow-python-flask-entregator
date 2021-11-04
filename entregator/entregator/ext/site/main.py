@@ -115,6 +115,26 @@ def logout():
     return redirect(url_for('site.index'))
 
 
+@bp.route('/pesquisa', methods=['GET', 'POST'])
+def search():
+
+    if request.method == 'POST':
+        pesquisa = str(request.form['search'])
+        results_r = Store.query.search(pesquisa, or_=True)
+        results_c = Items.query.search(pesquisa, or_=True)
+
+        if 'null' in str(results_c) and 'null' in str(results_r):
+            flash('Nenhum restaurante ou prato foi encontrado', 'error')
+            return redirect(url_for('site.index'))
+        elif 'null' in str(results_c):
+            return render_template('search.html', restaurants=results_r)
+        elif 'null' in str(results_r):
+            return render_template('search.html', foods=results_c)
+        else:
+            return render_template('search.html', restaurants=results_r, foods=results_c)
+    
+    return redirect(url_for('site.index'))
+
 @bp.route('/restaurantes')
 def restaurants():
     categories = Category.query.all()
