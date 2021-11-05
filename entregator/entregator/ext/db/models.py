@@ -18,6 +18,10 @@ class User(db.Model):
     passwd = db.Column('passwd', db.Unicode)
     admin = db.Column('admin', db.Boolean)
 
+    addresses = db.relationship('Address', backref='user', lazy='dynamic')
+    orders = db.relationship('Order', backref='user', lazy='dynamic')
+    stores = db.relationship('Store', backref='user', lazy='dynamic')
+
     #PROPRIEDADES DO FLASK-LOGIN    
     @property
     def is_authenticated(self):
@@ -44,6 +48,8 @@ class Category(db.Model):
     name = db.Column('name', db.Unicode, unique=True)
     on_menu = db.Column('on_menu', db.Boolean)
 
+    stores = db.relationship('Store', backref='category', lazy='dynamic')
+
     def __repr__(self):
         return '%r' % (self.name)
 
@@ -59,8 +65,8 @@ class Store(db.Model):
     category_id = db.Column('category_id', db.Integer, db.ForeignKey('category.id'))
     active = db.Column('active', db.Boolean)
 
-    user = db.relationship('User', foreign_keys=user_id)
-    category = db.relationship('Category', foreign_keys=category_id)
+    items = db.relationship('Items', backref='store', lazy='dynamic')
+    orders = db.relationship('Order', backref='store', lazy='dynamic')
 
     def __repr__(self):
         return '%r' % (self.name)
@@ -78,7 +84,7 @@ class Items(db.Model):
     store_id = db.Column('store_id', db.Integer, db.ForeignKey('store.id'))
     available = db.Column('available', db.Boolean)
 
-    store = db.relationship('Store', foreign_keys=store_id)
+    order_items = db.relationship('OrderItems', backref='items', lazy='dynamic')
 
     def __repr__(self):
         return '%r' % (self.name)
@@ -95,9 +101,8 @@ class Order(db.Model):
     store_id = db.Column('store_id', db.Integer, db.ForeignKey('store.id'))
     address_id = db.Column('address_id', db.Integer, db.ForeignKey('address.id'))
 
-    user = db.relationship('User', foreign_keys=user_id)
-    store = db.relationship('Store', foreign_keys=store_id)
-    address = db.relationship('Address', foreign_keys=address_id)
+    order_items = db.relationship('OrderItems', backref='order', lazy='dynamic')
+    checkout = db.relationship('Checkout', backref='order', lazy='dynamic')
 
     def __repr__(self):
         return '%r' % (self.id)
@@ -110,9 +115,6 @@ class OrderItems(db.Model):
     items_id = db.Column('items_id', db.Integer, db.ForeignKey('items.id'))
     quant = db.Column('quant', db.Integer)
 
-    order = db.relationship('Order', foreign_keys=order_id)
-    items = db.relationship('Items', foreign_keys=items_id)
-
 
 class Checkout(db.Model):
     __tablename__ = "checkout"
@@ -124,8 +126,6 @@ class Checkout(db.Model):
     completed = db.Column('completed', db.Boolean)
     order_id = db.Column('order_id', db.Integer, db.ForeignKey('order.id'))
 
-    order = db.relationship('Order', foreign_keys=order_id)
-
 
 class Address(db.Model):
     __tablename__ = "address"
@@ -136,7 +136,7 @@ class Address(db.Model):
     address = db.Column('address', db.Unicode)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 
-    user = db.relationship('User', foreign_keys=user_id)
+    orders = db.relationship('Order', backref='address', lazy='dynamic')
 
     def __repr__(self):
         return '%r' % (self.id)

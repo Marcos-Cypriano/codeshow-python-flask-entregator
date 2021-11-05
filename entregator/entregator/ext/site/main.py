@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, request, flash, url_for
 from flask_login import login_user, logout_user, current_user
+from werkzeug.security import check_password_hash
 
 
 from entregator.ext.auth.form import OrderItemsForm, UserForm, AddressForm
@@ -54,7 +55,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
 
-        if user and user.passwd == form.passwd.data:
+        if user and (check_password_hash(user.passwd, form.passwd.data) or user.passwd == form.passwd.data):#RETIRAR ANTES DO DEPLOY
             login_user(user)
             flash('Login com sucesso!', 'info')
             return redirect(url_for('site.index'))
@@ -68,13 +69,13 @@ def profile():
     categories = Category.query.all()
 
     if current_user.is_active:
-        enderecos = Address.query.filter_by(user_id=current_user.id).all()
-        pedidos = Order.query.filter_by(user_id=current_user.id, completed=1).all()
+        enderecos = current_user.addresses.all()
+        pedidos = current_user.orders.filter_by(completed=1).all()
         if pedidos:
             lista = []
             for pedido in pedidos:
-                check = Checkout.query.filter_by(order_id=pedido.id).first()
-                items_list, tot = cart_params(pedido.id)
+                check = pedido.checkout.first()
+                items_list, tot = cart_params(pedido)
                 lista.append({'items': items_list, 'total': tot, 'restaurante': pedido.store, 'situacao': check.completed})
 
             return render_template('profile.html', enderecos=enderecos, lista=lista, categories=categories)
@@ -147,9 +148,8 @@ def restaurants():
 def category_restaurants(categoria):
     categories = Category.query.all()
 
-    restaurantes = Category.query.filter_by(name=categoria).first()
-
-    stores = Store.query.filter_by(category_id=restaurantes.id, active=True).all()
+    category = Category.query.filter_by(name=categoria).first()
+    stores = category.stores.filter_by(active=True).all()
 
     return render_template('category_restaurants.html', categories=categories, stores=stores)
 
@@ -160,7 +160,7 @@ def page_restaurant(loja):
 
     estabelecimento = Store.query.filter_by(id=loja).first()
 
-    itens = Items.query.filter_by(store_id=loja, available=True).all()
+    itens = estabelecimento.items.filter_by(available=True).all()
 
     return render_template('page_restaurant.html', categories=categories, foods=itens, loja=estabelecimento.name)
 
@@ -169,7 +169,7 @@ def page_restaurant(loja):
 def page_item(item):
     categories = Category.query.all()
     comida = Items.query.filter_by(id=item).first()
-    estabelecimento = Store.query.filter_by(id=comida.store_id).first()
+    estabelecimento = comida.store
 
     if current_user.is_active:
         form = OrderItemsForm()
@@ -179,7 +179,7 @@ def page_item(item):
                 flash('Você precisa adicionar uma quantidade ao prato escolhido!', 'error')
                 return redirect(url_for('site.page_item', item=item))
             else:
-                order = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).first()
+                order = current_user.orders.order_by(Order.id.desc()).first()
 
                 if order == None or order.completed or order.expired: 
                     order = create_order(user_id=current_user.id, store_id=estabelecimento.id)
@@ -189,7 +189,7 @@ def page_item(item):
                     flash(aviso, 'error')
                     return redirect(url_for('site.cart'))
 
-                items_list, tot= evaluate_items_order(quantidade=form.quant.data, order_id=order.id, comida=item)
+                evaluate_items_order(quantidade=form.quant.data, order=order, comida=item)
                 return redirect(url_for('site.cart'))
 
         return render_template('/page_item.html', categories=categories, foods=comida, form=form, loja=estabelecimento.name)
@@ -202,15 +202,15 @@ def page_item(item):
 def cart():
     categories = Category.query.all()
 
-    order = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).first()
-    enderecos = Address.query.filter_by(user_id=current_user.id).all()
-    loja = Store.query.filter_by(id=order.store_id).first()
+    order = current_user.orders.order_by(Order.id.desc()).first()
+    enderecos = current_user.addresses
+    loja = order.store
 
     if order == None or order.completed or order.expired:
         flash('Não há um pedido aberto.', 'error')
         return redirect(url_for('site.index'))
     else:
-        items_list, tot = cart_params(order.id)
+        items_list, tot = cart_params(order)
 
 
     return render_template('/cart.html', categories=categories, order=order, order_items=items_list, tot=tot, enderecos=enderecos, loja=loja)
@@ -235,13 +235,16 @@ def checkout(order):
         return render_template('/checkout.html')
 
     value = request.form.get('pagamento')
-    add = Address.query.filter_by(id=endereco).first()
+    # add = Address.query.filter_by(id=endereco).first()
+    add = Address.query.get(endereco)
 
-    pedido = Order.query.filter_by(id=order).first()
-    loja = Store.query.filter_by(id=pedido.store_id).first()
-    items_list, tot = cart_params(order_id=pedido.id)
+    # pedido = Order.query.filter_by(id=order).first()
+    pedido = Order.query.get(order)
+    # loja = Store.query.filter_by(id=pedido.store_id).first()
+    loja = pedido.store
+    items_list, tot = cart_params(pedido)
     
-    checkout = create_checkout(payment=value, order_id=order)
+    checkout = create_checkout(order=pedido, payment=value)
     
     flash('Pedido confirmado! Aguarde mais informações diretamente do restaurante.', 'info')
     return render_template('/checkout.html', loja=loja.name, items_list=items_list, tot=checkout.total, pag=checkout.payment, endereco=add)

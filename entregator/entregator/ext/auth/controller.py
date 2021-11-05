@@ -67,8 +67,8 @@ def alter_address_order(id= int, address_id = int) -> Order:
     return order
 
 
-def create_order_items(order_id = int, items_id = int, quant = int) -> OrderItems:
-    order_items = OrderItems(order_id=order_id, items_id=items_id, quant=quant)
+def create_order_items(order, items_id = int, quant = int) -> OrderItems:
+    order_items = OrderItems(order_id=order.id, items_id=items_id, quant=quant)
     
     db.session.add(order_items)
     db.session.commit()
@@ -108,8 +108,9 @@ def complete_order(order_id = int, completed = bool) -> Order:
     return order
 
 
-def create_checkout(payment = str, completed: bool=False, order_id = int):
-    items = OrderItems.query.filter_by(order_id=order_id).all()
+def create_checkout(order, payment = str, completed: bool=False):
+    # items = OrderItems.query.filter_by(order_id=order_id).all()
+    items = order.order_items.all()
     tot = 0
     items_list = []
     for item in items:
@@ -117,7 +118,7 @@ def create_checkout(payment = str, completed: bool=False, order_id = int):
         items_list.append({'name': prato.name, 'quantidade': item.quant})
         tot += prato.price * item.quant
 
-    checkout = Checkout(payment=payment, total=tot, completed=completed, order_id=order_id)
+    checkout = Checkout(payment=payment, total=tot, completed=completed, order_id=order.id)
 
     db.session.add(checkout)
     db.session.commit()
