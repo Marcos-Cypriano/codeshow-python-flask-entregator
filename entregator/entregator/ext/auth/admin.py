@@ -82,7 +82,6 @@ class StoreAdmin(ModelView):
 
 
 class ItemsAdmin(ModelView):
-    #TENTAR alterar a busca para o nome do restaurante
     column_searchable_list = ['store_id']
 
     can_edit = True

@@ -1,4 +1,4 @@
-from entregator.ext.db.models import Category, Items, OrderItems, Store
+from entregator.ext.db.models import Category, Store
 from entregator.ext.auth.controller import alter_order, alter_order_items, create_order_items
 
 
@@ -35,7 +35,6 @@ def evaluate_order(loja, order):
 
 
 def evaluate_items_order(quantidade, order, comida):
-    # existing_item = OrderItems.query.filter_by(order_id=order_id, items_id=comida).first()
     existing_item = order.order_items.filter_by(items_id=comida).first()
 
     if existing_item:

@@ -109,7 +109,6 @@ def complete_order(order_id = int, completed = bool) -> Order:
 
 
 def create_checkout(order, payment = str, completed: bool=False):
-    # items = OrderItems.query.filter_by(order_id=order_id).all()
     items = order.order_items.all()
     tot = 0
     items_list = []

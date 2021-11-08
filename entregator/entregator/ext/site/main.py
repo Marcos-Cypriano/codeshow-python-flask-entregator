@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash
 
 
 from entregator.ext.auth.form import OrderItemsForm, UserForm, AddressForm
-from entregator.ext.db.models import Address, Category, Checkout, Items, Order, Store, User
+from entregator.ext.db.models import Address, Category, Items, Order, Store, User
 from entregator.ext.site.controllers import cart_params, evaluate_items_order, evaluate_order
 from entregator.ext.auth.controller import add_address, alter_address_order, complete_order, create_checkout, create_user, delete_address, delete_order_items, save_user_photo, create_order
 
@@ -40,9 +40,6 @@ def signup():
         login_user(user)
         flash('Usuário cadastrado com sucesso! Não se esqueça de cadastrar um enredeço.', 'info')
         return redirect(url_for('site.index'))
-
-    '''if request.method == 'POST':
-        __import__('ipdb').set_trace()'''
 
     return render_template('userform.html', form=form, categories=categories)
 
@@ -235,12 +232,9 @@ def checkout(order):
         return render_template('/checkout.html')
 
     value = request.form.get('pagamento')
-    # add = Address.query.filter_by(id=endereco).first()
     add = Address.query.get(endereco)
 
-    # pedido = Order.query.filter_by(id=order).first()
     pedido = Order.query.get(order)
-    # loja = Store.query.filter_by(id=pedido.store_id).first()
     loja = pedido.store
     items_list, tot = cart_params(pedido)
     

@@ -47,17 +47,17 @@
                     <h1>Informações do pedido:</h1>
                     <br>
                     <form action="{{url_for('site.checkout', order=order.id)}}" method="POST">
-                        <div class="select">
-                            <select name='endereco'>
-                                {% if enderecos %}
+                        {% if enderecos is defined %}
+                            <a href="{{url_for('site.address')}}">Cadastre um endereço!</a>
+                        {% else %}
+                            <div class="select">
+                                <select name='endereco'>
                                     {% for local in enderecos %}
                                         <option value={{local.id}}>{{ local.address }}</option>
                                     {% endfor %}
-                                {% else %}
-                                    <a href="{{url_for('site.address')}}">Cadastre um endereço!</a>
-                                {% endif %}
-                            </select>
-                        </div>
+                                </select>
+                            </div>  
+                        {% endif %}
                         <br><br>
                         <div class="select">
                             <select name='pagamento'>

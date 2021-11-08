@@ -1,5 +1,4 @@
 from datetime import datetime
-import flask_whooshalchemy3
 from whoosh.analysis import StemmingAnalyzer
 
 from entregator.ext.db import db

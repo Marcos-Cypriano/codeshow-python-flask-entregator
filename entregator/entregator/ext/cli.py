@@ -22,7 +22,6 @@ def init_app(app):
     @click.option('--admin', '-a', is_flag=True, default=False)
     def add_user(email, passwd, admin):
         '''Adiciona usuario'''
-        #TRATAR User Exists exception
         create_user(email=email, passwd=passwd, admin=admin)
 
         click.echo(f'Usuário {email} criado com sucesso!')

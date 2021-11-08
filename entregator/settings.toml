@@ -1,5 +1,6 @@
 [default]
 DEBUG = false
+SQLALCHEMY_TRACK_MODIFICATIONS = true
 FLASK_ADMIN_SWATCH = 'cerulean'
 ADMIN_NAME = 'Entregator'
 EXTENSIONS = [
@@ -16,7 +17,6 @@ UPLOAD_FOLDER = 'uploads'
 [development]
 DEBUG = true
 SQLALCHEMY_DATABASE_URI = 'sqlite:///entregator.db'
-SQLALCHEMY_TRACK_MODIFICATIONS = true
 WHOOSH_INDEX_PATH='whooshIndex'
 WHOOSH_ANALYZER='StemmingAnalyzer'
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = true
@@ -36,5 +36,4 @@ EXTENSIONS = [
 ]
 
 [production]
-SQLALCHEMY_TRACK_MODIFICATIONS = false  
 SQLALCHEMY_DATABASE_URI = 'postgresql://'

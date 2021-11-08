@@ -14,8 +14,6 @@ class AddressForm(FlaskForm):
     address = wtf.StringField("Address", [wtf.validators.Length(min=5)])
 
 class OrderForm(FlaskForm):
-    #O QUE PREENCHER NSAS FUNÇÕES ABAIXO
-    #ADICIONAR UM ESPAÇO PARA OS ITENS DO PEDIDO
     created_at = wtf.DateTimeField()
     completed = wtf.BooleanField()
     user_id = wtf.IntegerField()
