@@ -79,7 +79,7 @@ class Items(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Unicode)
     image = db.Column('image', db.Unicode)
-    price = db.Column('price', db.Numeric(4,2))
+    price = db.Column('price', db.Numeric(10,2))
     store_id = db.Column('store_id', db.Integer, db.ForeignKey('store.id'))
     available = db.Column('available', db.Boolean)
 
@@ -120,7 +120,7 @@ class Checkout(db.Model):
 
     id = db.Column('id', db.Integer, primary_key=True)
     payment = db.Column('payment', db.Unicode)
-    total = db.Column('total', db.Numeric(4,2))
+    total = db.Column('total', db.Numeric(10,2))
     created_at = db.Column('created_at', db.DateTime, index=True, default=datetime.utcnow)
     completed = db.Column('completed', db.Boolean)
     order_id = db.Column('order_id', db.Integer, db.ForeignKey('order.id'))

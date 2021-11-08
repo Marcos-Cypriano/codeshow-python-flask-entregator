@@ -67,7 +67,7 @@ def profile():
 
     if current_user.is_active:
         enderecos = current_user.addresses.all()
-        pedidos = current_user.orders.filter_by(completed=1).all()
+        pedidos = current_user.orders.filter_by(completed=True).all()
         if pedidos:
             lista = []
             for pedido in pedidos:
@@ -200,13 +200,13 @@ def cart():
     categories = Category.query.all()
 
     order = current_user.orders.order_by(Order.id.desc()).first()
-    enderecos = current_user.addresses
-    loja = order.store
+    enderecos = Address.query.filter_by(user_id=current_user.id).all()
 
     if order == None or order.completed or order.expired:
         flash('Não há um pedido aberto.', 'error')
         return redirect(url_for('site.index'))
     else:
+        loja = order.store
         items_list, tot = cart_params(order)
 
 
